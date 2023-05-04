@@ -12,6 +12,6 @@ const Question = sequelize.define("Question", {
   }
 })
 
-Question.sync({ force: false }).then(() => {})
+Question.sync({ force: false })
 
 module.exports = Question

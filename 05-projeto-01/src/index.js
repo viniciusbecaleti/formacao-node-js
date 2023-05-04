@@ -2,6 +2,7 @@ const express = require("express")
 const app = express()
 const sequelize = require("./database/database")
 const Question = require("./database/Question")
+const Answer = require("./database/Answer")
 
 sequelize.authenticate()
   .then(() => {
@@ -63,12 +64,36 @@ app.get("/question/:id", async (req, res) => {
       return res.redirect("/")
     }
 
+    const answers = await Answer.findAll({
+      where: {
+        question_id: id
+      },
+      order: [["id", "DESC"]]
+    })
+
     res.render("question", {
-      question
+      question,
+      answers
     })
   } catch (error) {
     console.log(error)
   }
+})
+
+app.post("/answer", async (req, res) => {
+  const { question_id, username, body } = req.body
+
+  try {
+    await Answer.create({
+      username: username ? username : "Anonymous",
+      body,
+      question_id
+    })
+  } catch (error) {
+    console.log(error)
+  }
+
+  res.redirect(`/question/${question_id}`)
 })
 
 app.listen(5500, () => console.log("Server is running on http://localhost:5500"))

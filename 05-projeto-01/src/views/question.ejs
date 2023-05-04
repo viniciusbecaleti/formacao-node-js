@@ -15,15 +15,17 @@
         <h1 class="fs-5 m-0">Responder</h1>
       </div>
       <div class="card-body">
-        <form class="row g-3" method="post">
+        <form class="row g-3" action="/answer" method="post">
+          <input type="hidden" name="question_id" value="<%= question.id %>">
+
           <div class="col-12">
             <label class="form-label">Nome</label>
             <input class="form-control" name="username" placeholder="Anonymous" />
           </div>
 
           <div class="col-12">
-            <label class="form-label">Descrição</label>
-            <textarea class="form-control" name="description" required></textarea>
+            <label class="form-label">Corpo</label>
+            <textarea class="form-control" name="body" required></textarea>
           </div>
 
           <div class="col-12 d-grid justify-content-end">
@@ -32,6 +34,16 @@
         </form>
       </div>
     </div>
+
+    <h5>Respostas</h5>
+
+    <hr>
+
+    <% for (const answer of answers) { %>
+      <strong><%= answer.username %></strong>
+      <p><%= answer.body %></p>
+      <hr>
+    <% } %>
   </div>
 </body>
 <%- include ("./partials/footer.ejs") %>
