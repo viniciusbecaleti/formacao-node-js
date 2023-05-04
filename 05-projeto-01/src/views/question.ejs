@@ -1,0 +1,37 @@
+<%- include ("./partials/header.ejs") %>
+<body>
+  <%- include ("./partials/navbar.ejs") %>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title"><%= question.title %></h5>
+        <p class="card-text"><%= question.description %></p>
+      </div>
+    </div>
+
+    <div class="card my-4">
+      <div class="card-header">
+        <h1 class="fs-5 m-0">Responder</h1>
+      </div>
+      <div class="card-body">
+        <form class="row g-3" method="post">
+          <div class="col-12">
+            <label class="form-label">Nome</label>
+            <input class="form-control" name="username" placeholder="Anonymous" />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Descrição</label>
+            <textarea class="form-control" name="description" required></textarea>
+          </div>
+
+          <div class="col-12 d-grid justify-content-end">
+            <button class="btn btn-primary" type="submit">Responder</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+<%- include ("./partials/footer.ejs") %>
