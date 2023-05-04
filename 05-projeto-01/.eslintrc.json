@@ -7,7 +7,7 @@
   "extends": "eslint:recommended",
   "overrides": [
     {
-      "files": ["public/script/main.js"],
+      "files": ["public/js/main.js"],
       "env": {
         "browser": true
       }
