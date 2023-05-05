@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <%- include ('../../partials/head.ejs') %>
+</head>
+<body>
+  <%- include ('../../partials/navbar.ejs') %>
+
+  <div class="container">
+    <h5>Publicar</h5>
+
+    <hr>
+
+    <div class="card">
+      <div class="card-body">
+        <form action="/admin/articles/save" method="post">
+          <div class="mb-3">
+            <label class="form-label" for="title">Título</label>
+            <input class="form-control" type="text" id="title" name="title">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="body">Corpo</label>
+            <textarea class="form-control" id="body" name="body"></textarea>
+          </div>
+
+          <button class="btn btn-primary w-100" type="submit">Publicar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <%- include ('../../partials/scripts.ejs') %>
+  <script src="/tinymce/tinymce.min.js"></script>
+  <script>
+    tinymce.init({
+      selector: 'textarea',
+      plugins: 'table preview media lists advlist link image autosave fullscreen codesample code autolink anchor searchreplace',
+      language: 'pt_BR'
+    })
+  </script>
+</body>
+</html>
