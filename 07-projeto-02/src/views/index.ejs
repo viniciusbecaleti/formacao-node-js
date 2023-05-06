@@ -4,8 +4,27 @@
   <%- include ('./partials/head.ejs') %>
 </head>
 <body>
+  <%- include ('./partials/navbar.ejs') %>
+
   <div class="container">
-    <h1>Hello, world!</h1>
+    <div class="row mb-2">
+      <% if (articles.length == 0) { %>
+        <p class="text-center text-body-secondary">Nenhum artigo encontrado</p>
+      <% } else { %>
+        <% for (const article of articles) { %>
+          <div class="col-md-6">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+              <div class="col p-4 d-flex flex-column position-static">
+                <strong class="d-inline-block mb-2 text-primary"><%= article.Category.name %></strong>
+                <h3 class="mb-0"><%= article.title %></h3>
+                <div class="mb-1 text-body-secondary"><%= formatDate(article.updatedAt) %></div>
+                <a href="/<%= article.slug %>" class="stretched-link">Read more</a>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
   </div>
 
   <%- include ('./partials/scripts.ejs') %>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <%- include ('../../partials/head.ejs') %>
+</head>
+<body>
+  <%- include ('../partials/navbar.ejs') %>
+
+  <div class="container">
+    <h5>Atualizar</h5>
+
+    <hr>
+
+    <div class="card">
+      <div class="card-body">
+        <form id="update">
+          <div class="mb-3">
+            <label class="form-label" for="title">Título</label>
+            <input class="form-control" type="text" id="title" name="title" value="<%= article.title %>">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="body">Corpo</label>
+            <textarea class="form-control" id="body" name="body"><%= article.body %></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="categoryId">Categoria</label>
+            <select class="form-control" name="categoryId" id="categoryId">
+              <option selected disabled>Selecione uma categoria</option>
+              <% for (const category of categories) { %>
+                <option value="<%= category.id %>" <%= category.id == article.CategoryId ? "selected" : null %>>
+                  <%= category.name %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+
+          <input type="hidden" name="id" value="<%= article.id %>">
+
+          <button class="btn btn-primary w-100" type="submit">Atualizar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <%- include ('../../partials/scripts.ejs') %>
+
+  <script src="/tinymce/tinymce.min.js"></script>
+
+  <script>
+    tinymce.init({
+      selector: 'textarea',
+      plugins: 'table preview media lists advlist link image autosave fullscreen codesample code autolink anchor searchreplace',
+      language: 'pt_BR'
+    })
+  </script>
+
+<script>
+  const formUpdate = document.querySelector("form#update")
+
+  formUpdate.addEventListener("submit", async (event) => {
+    event.preventDefault()
+
+    const id = event.target.id.value
+    const title = event.target.title.value
+    const body = tinymce.activeEditor.getContent()
+    const categoryId = event.target.categoryId.value
+
+    const response = await fetch(`http://localhost:5500/admin/articles/update`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id,
+        title,
+        body,
+        categoryId
+      })
+    })
+
+    const { message } = await response.json()
+
+    if (message === "success") {
+      location.href = "/admin/articles"
+    } else {
+      alert("Oops! Algo deu errado")
+    }
+  })
+</script>
+</body>
+</html>

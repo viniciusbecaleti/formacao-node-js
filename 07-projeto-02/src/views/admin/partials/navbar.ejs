@@ -9,21 +9,15 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="/">
-            Home
+          <a class="nav-link" href="/admin/articles">
+            Artigos
           </a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/categories">
             Categorias
           </a>
-          <ul class="dropdown-menu">
-            <% for (const category of categories) { %>
-              <li>
-                <a class="dropdown-item" href="/category/<%= category.slug %>"><%= category.name %></a>
-              </li>
-            <% } %>
-          </ul>
         </li>
       </ul>
     </div>

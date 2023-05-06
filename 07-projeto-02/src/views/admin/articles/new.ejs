@@ -4,7 +4,7 @@
   <%- include ('../../partials/head.ejs') %>
 </head>
 <body>
-  <%- include ('../../partials/navbar.ejs') %>
+  <%- include ('../partials/navbar.ejs') %>
 
   <div class="container">
     <h5>Publicar</h5>
@@ -22,6 +22,16 @@
           <div class="mb-3">
             <label class="form-label" for="body">Corpo</label>
             <textarea class="form-control" id="body" name="body"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="categoryId">Categoria</label>
+            <select class="form-control" name="categoryId" id="categoryId">
+              <option selected disabled>Selecione uma categoria</option>
+              <% for (const category of categories) { %>
+                <option value="<%= category.id %>"><%= category.name %></option>
+              <% } %>
+            </select>
           </div>
 
           <button class="btn btn-primary w-100" type="submit">Publicar</button>
