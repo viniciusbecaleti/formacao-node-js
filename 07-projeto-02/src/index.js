@@ -35,15 +35,25 @@ const getCategories = async (req, res, next) => {
 app.get("/", getCategories, async (req, res) => {
   const categories = req.categories
 
-  const articles = await Article.findAll({
+  const totalPerPage = 4
+
+  const articles = await Article.findAndCountAll({
     include: Category,
+    limit: totalPerPage,
+    offset: 0,
     order: [["id", "DESC"]]
   })
 
+  let hasMorePage = true
+  if (totalPerPage >= articles.count) {
+    hasMorePage = false
+  }
+
   res.render("index", {
-    articles,
+    articles: articles.rows,
     formatDate,
-    categories
+    categories,
+    hasMorePage
   })
 })
 
@@ -94,6 +104,47 @@ app.get("/category/:slug", getCategories, async (req, res) => {
     articles: articlesByCategory,
     formatDate,
     categories
+  })
+})
+
+app.get("/page/:page", getCategories, async (req, res) => {
+  const categories = req.categories
+  const page = Number(req.params.page)
+
+  const totalPerPage = 4
+  const currentOffset = (page * totalPerPage) - totalPerPage // ou (page - 1) * totalPerPage
+
+  if (isNaN(page) || page < 2) {
+    return res.redirect("..")
+  }
+
+  const articles = await Article.findAndCountAll({
+    limit: totalPerPage,
+    offset: currentOffset,
+    include: Category,
+    order: [["id", "DESC"]]
+  })
+
+  if (articles.rows.length === 0) {
+    return res.redirect("..")
+  }
+
+  let hasMorePage = true
+  if (currentOffset + totalPerPage >= articles.count) {
+    hasMorePage = false
+  }
+
+  const result = {
+    articles,
+    hasMorePage
+  }
+
+  res.render("page", {
+    articles: result.articles.rows,
+    categories,
+    formatDate,
+    hasMorePage,
+    currentPage: page
   })
 })
 

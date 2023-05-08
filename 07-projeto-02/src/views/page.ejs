@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <%- include ('./partials/head.ejs') %>
+</head>
+<body>
+  <%- include ('./partials/navbar.ejs') %>
+
+  <div class="container">
+    <div class="row mb-2">
+      <% for (const article of articles) { %>
+        <div class="col-md-6">
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static">
+              <strong class="d-inline-block mb-2 text-primary"><%= article.Category.name %></strong>
+              <h3 class="mb-0"><%= article.title %></h3>
+              <div class="mb-1 text-body-secondary"><%= formatDate(article.updatedAt) %></div>
+              <a href="/<%= article.slug %>" class="stretched-link">Read more</a>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <% if (currentPage === 2) { %>
+        <a href="/">Prev</a>
+      <% } else { %>
+        <a href="/page/<%= currentPage - 1 %>">Prev</a>
+      <% } %>
+
+      <% if (hasMorePage) { %>
+        <a href="/page/<%= currentPage + 1 %>">Next</a>
+      <% } %>
+    </div>
+  </div>
+
+  <%- include ('./partials/scripts.ejs') %>
+</body>
+</html>

@@ -25,6 +25,12 @@
         <% } %>
       <% } %>
     </div>
+
+    <div class="d-flex justify-content-end">
+      <% if (hasMorePage) { %>
+        <a href="/page/2">Next</a>
+      <% } %>
+    </div>
   </div>
 
   <%- include ('./partials/scripts.ejs') %>

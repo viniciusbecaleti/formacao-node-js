@@ -5,7 +5,10 @@ const Article = require("./Article")
 const Category = require("../categories/Category")
 
 router.get("/", async (req, res) => {
-  const articles = await Article.findAll({ include: Category })
+  const articles = await Article.findAll({
+    include: Category,
+    order: [["id", "DESC"]]
+  })
 
   res.render("admin/articles/index", {
     articles
