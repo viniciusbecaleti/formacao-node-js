@@ -56,36 +56,36 @@
     })
   </script>
 
-<script>
-  const formUpdate = document.querySelector("form#update")
+  <script>
+    const formUpdate = document.querySelector("form#update")
 
-  formUpdate.addEventListener("submit", async (event) => {
-    event.preventDefault()
+    formUpdate.addEventListener("submit", async (event) => {
+      event.preventDefault()
 
-    const id = event.target.id.value
-    const title = event.target.title.value
-    const body = tinymce.activeEditor.getContent()
-    const categoryId = event.target.categoryId.value
+      const id = event.target.id.value
+      const title = event.target.title.value
+      const body = tinymce.activeEditor.getContent()
+      const categoryId = event.target.categoryId.value
 
-    const response = await fetch(`http://localhost:5500/admin/articles/update`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id,
-        title,
-        body,
-        categoryId
+      const response = await fetch(`http://localhost:5500/admin/articles/update`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id,
+          title,
+          body,
+          categoryId
+        })
       })
+
+      const { message } = await response.json()
+
+      if (message === "success") {
+        location.href = "/admin/articles"
+      } else {
+        alert("Oops! Algo deu errado")
+      }
     })
-
-    const { message } = await response.json()
-
-    if (message === "success") {
-      location.href = "/admin/articles"
-    } else {
-      alert("Oops! Algo deu errado")
-    }
-  })
-</script>
+  </script>
 </body>
 </html>

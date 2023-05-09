@@ -3,6 +3,9 @@ const router = express.Router()
 const slugify = require("slugify")
 const Article = require("./Article")
 const Category = require("../categories/Category")
+const authenticate = require("../middlewares/authentication")
+
+router.use(authenticate)
 
 router.get("/", async (req, res) => {
   const articles = await Article.findAll({

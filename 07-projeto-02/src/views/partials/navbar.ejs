@@ -13,17 +13,22 @@
             Home
           </a>
         </li>
-        <li class="nav-item dropdown">
+        <!-- <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Categorias
           </a>
           <ul class="dropdown-menu">
-            <% for (const category of categories) { %>
+            <# for (const category of categories) { #>
               <li>
-                <a class="dropdown-item" href="/category/<%= category.slug %>"><%= category.name %></a>
+                <a class="dropdown-item" href="/category/<#= category.slug #>"><#= category.name #></a>
               </li>
-            <% } %>
+            <# } #>
           </ul>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link" href="/login">
+            Entrar
+          </a>
         </li>
       </ul>
     </div>

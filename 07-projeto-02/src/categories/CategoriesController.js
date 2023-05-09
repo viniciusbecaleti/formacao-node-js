@@ -2,6 +2,9 @@ const express = require("express")
 const router = express.Router()
 const Category = require("./Category")
 const slugify = require("slugify")
+const authenticate = require("../middlewares/authentication")
+
+router.use(authenticate)
 
 router.get("/", async (req, res) => {
   const categories = await Category.findAll()

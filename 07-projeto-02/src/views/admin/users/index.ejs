@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <%- include ('../../partials/head.ejs') %>
+</head>
+<body>
+  <%- include ('../partials/navbar.ejs') %>
+
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between">
+      <h5 class="mb-0">Usuários</h5>
+      <a href="/admin/users/create" class="btn btn-primary">Cadastrar usuário</a>
+    </div>
+
+    <hr>
+
+    <div class="table-responsive">
+      <table id="category" class="table table-hover table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (const user of users) { %>
+            <tr>
+              <th scope="row"><%= user.id %></th>
+              <td><%= user.email %></td>
+              <td>
+                <a href="/admin/users/update/<%= user.id %>" class="btn btn-warning">Editar</a>
+                <button class="btn btn-danger" type="button" data-id="<%= user.id %>">Apagar</button>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <%- include ('../../partials/scripts.ejs') %>
+
+  <!-- <script>
+    const categoryTable = document.querySelector("table#category")
+
+    categoryTable.addEventListener("click", async (event) => {
+      const button = event.target
+
+      if (!button.hasAttribute("type")) {
+        return
+      }
+
+      const decision = confirm("Você realmente deseja deletar a categoria?")
+
+      if (!decision) {
+        return
+      }
+
+      const id = button.dataset.id
+
+      const response = await fetch(`http://localhost:5500/admin/categories/delete/${id}`, { method: "DELETE" })
+      const { message } = await response.json()
+
+      if (message === "success") {
+        location.reload()
+      }
+    })
+  </script> -->
+</body>
+</html>
