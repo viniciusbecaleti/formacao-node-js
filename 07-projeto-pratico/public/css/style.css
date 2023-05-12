@@ -6,6 +6,6 @@ body {
   background: #f5f5fb;
 }
 
-.login {
+.login, .signup {
   max-width: 600px;
 }
