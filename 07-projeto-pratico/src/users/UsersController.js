@@ -44,6 +44,11 @@ router.post("/signup", async (req, res) => {
   res.redirect("/");
 });
 
+router.get("/logout", (req, res) => {
+  req.session.user = undefined;
+  res.redirect("/");
+});
+
 router.post("/authentication", async (req, res) => {
   const { email, password } = req.body;
 

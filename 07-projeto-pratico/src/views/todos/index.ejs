@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <%- include ("../partials/head.ejs") %>
+</head>
+<body>
+  <div class="d-flex flex-column min-vh-100">
+    <%- include ("../partials/navbar.ejs") %>
+
+    <% if (todos.length === 0) { %>
+      <div class="container flex-grow-1 d-flex flex-column align-items-center justify-content-center">
+        <div class="d-flex align-items-center justify-content-center">
+          <span class="text-secondary">Nenhuma tarefa encontrada! <a href="#" data-bs-toggle="modal" data-bs-target="#taskModal">Nova tarefa</a></span>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="container mt-3">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h1 class="h3 mb-0">Tarefas</h1>
+          <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">Nova tarefa</button>
+        </div>
+
+        <ul class="list-group">
+          <% for (const todo of todos) { %>
+            <li class="list-group-item">
+              <div class="row justify-content-between">
+                <div class="col">
+                  <%= todo.task %>
+                </div>
+                <div class="col-sm-auto">
+                  <a href="/todos/delete/<%= todo.id %>">Apagar</a>
+                </div>
+              </div>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="newTaskModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="newTaskModal">Nova tarefa</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="newTaskForm" action="/todos/create" method="post">
+            <div id="alertError" class="alert alert-danger d-none" role="alert">
+              O campo não pode estar vazio!
+            </div>
+
+            <div class="mb-3">
+              <label for="taskInput" class="form-label">Tarefa</label>
+              <input type="text" class="form-control" name="task" id="taskInput">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button form="newTaskForm" type="submit" class="btn btn-primary">Criar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
+  <script>
+    const newTaskModal = document.querySelector('#taskModal')
+    const newTaskForm = document.querySelector('#newTaskForm')
+    const taskInput = document.querySelector('#taskInput')
+    const alertError = document.querySelector('#alertError')
+
+    newTaskModal.addEventListener('shown.bs.modal', () => {
+      alertError.classList.add('d-none')
+      taskInput.focus()
+    })
+
+    newTaskForm.addEventListener("submit", (event) => {
+      event.preventDefault()
+
+      if (!taskInput.value) {
+        return alertError.classList.remove("d-none")
+      }
+
+      newTaskForm.submit()
+    })
+  </script>
+</body>
+</html>

@@ -2,6 +2,7 @@ const express = require("express");
 const server = express();
 const sequelize = require("./database/connection");
 const session = require("express-session");
+const checkIsAuthenticate = require("./middleware/checkIsAuthenticate");
 const UsersController = require("./users/UsersController");
 const TodosController = require("./todos/TodosController");
 
@@ -12,7 +13,9 @@ server.use(express.static("public"));
 server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
 server.use(session({
-  secret: "keyboard cat",
+  secret: "691fd352139ddd5987bd3f4003439ee0",
+  resave: false,
+  saveUninitialized: true,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 30 // 30 dias
   }
