@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h2>Lista de Jogos</h2>
+
+  <ul id="games"></ul>
+
+  <hr>
+
+  <h2>Novo Jogo</h2>
+
+  <form id="create" action="/" method="post">
+    <input type="text" name="name" placeholder="Nome"><br><br>
+    <input type="number" min="1900" max="2099" step="1" name="year" placeholder="Ano"><br><br>
+    <input type="number" name="price" placeholder="Preço"><br><br>
+    <button type="submit">Cadastrar</button>
+  </form>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    (async () => {
+      const gameList = document.querySelector("#games")
+      const createGame = document.querySelector("#create")
+
+      const games = await axios.get("http://localhost:3000/games")
+
+      for (const game of games.data) {
+        const item = document.createElement("li")
+        item.innerHTML = game.name
+        gameList.appendChild(item)
+      }
+
+      function handleCreateGame(event) {
+        event.preventDefault()
+        
+        const newGame = {
+          name: createGame.name.value,
+          year: Number(createGame.year.value),
+          price: Number(createGame.price.value)
+        }
+
+        axios.post("http://localhost:3000/game", newGame)
+          .then(() => {
+            location.reload()
+          })
+          .catch((error) => {
+            if (error.response.status === 400) {
+              return alert("Could not create game, invalid data")
+            }
+            
+            console.log(error);
+          })
+      }
+
+      createGame.addEventListener("submit", handleCreateGame)
+    })()
+  </script>
+</body>
+</html>

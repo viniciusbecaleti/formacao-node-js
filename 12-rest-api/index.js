@@ -1,8 +1,10 @@
 const express = require("express")
 const app = express()
+const cors = require("cors")
 
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
+app.use(cors())
 
 const db = {
   games: [
@@ -53,7 +55,7 @@ app.get("/game/:id", (req, res) => {
 app.post("/game", (req, res) => {
   const { name, year, price } = req.body
 
-  if (name === undefined || year === undefined || price === undefined) {
+  if (!name || !year || !price) {
     return res.status(400).json({
       message: "Invalid game data"
     })
@@ -74,7 +76,7 @@ app.post("/game", (req, res) => {
 
   db.games.push(newGame)
 
-  res.status(201).json(newGame)
+  res.sendStatus(201)
 })
 
 app.delete("/game/:id", (req, res) => {
@@ -149,4 +151,4 @@ app.put("/game/:id", (req, res) => {
   res.sendStatus(200)
 })
 
-app.listen(5500, () => console.log("Server is running on port 5500"))
+app.listen(3000, () => console.log("Server is running on port 5500"))
