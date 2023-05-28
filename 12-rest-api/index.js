@@ -9,19 +9,19 @@ app.use(cors())
 const db = {
   games: [
     {
-      id: 14,
+      id: 1685238662296,
       name: 'Euro Truck Simulator 2',
       year: 2012,
       price: 1249
     },
     {
-      id: 23,
+      id: 1685238662796,
       name: 'Mortal Kombat 1',
       year: 2023,
       price: 27990
     },
     {
-      id: 78,
+      id: 1685238662996,
       name: 'The Outlast Trials',
       year: 2023,
       price: 8899
@@ -68,7 +68,7 @@ app.post("/game", (req, res) => {
   }
 
   const newGame = {
-    id: Math.floor(Math.random() * 101),
+    id: Number(new Date().getTime()),
     name,
     year,
     price

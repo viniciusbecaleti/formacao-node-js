@@ -22,6 +22,17 @@
     <button type="submit">Cadastrar</button>
   </form>
 
+  <hr>
+
+  <h2>Editar Jogo</h2>
+
+  <form id="edit" action="/" method="post">
+    <input type="text" name="name" placeholder="Nome"><br><br>
+    <input type="number" min="1900" max="2099" step="1" name="year" placeholder="Ano"><br><br>
+    <input type="number" name="price" placeholder="Preço"><br><br>
+    <button type="submit">Cadastrar</button>
+  </form>
+
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
     (async () => {
@@ -30,10 +41,34 @@
 
       const games = await axios.get("http://localhost:3000/games")
 
+      function deleteGame(gameId) {
+        axios.delete(`http://localhost:3000/game/${gameId}`)
+          .then(response => {
+            location.reload()
+          })
+          .catch(error => {         
+            const { response: { data: { message } } } = error
+            
+            if (message) {
+              return console.log(message);
+            }
+            
+            console.log(error);
+          })
+      }
+
       for (const game of games.data) {
         const item = document.createElement("li")
         item.innerHTML = game.name
+        item.setAttribute("data-id", game.id)
         gameList.appendChild(item)
+
+        const deleteBtn = document.createElement("button")
+        deleteBtn.innerHTML = "Deletar"
+        deleteBtn.setAttribute("type", "submit")
+        item.appendChild(deleteBtn)
+
+        deleteBtn.addEventListener("click", () => deleteGame(game.id))
       }
 
       function handleCreateGame(event) {
@@ -50,8 +85,10 @@
             location.reload()
           })
           .catch((error) => {
-            if (error.response.status === 400) {
-              return alert("Could not create game, invalid data")
+            const { response: { data: { message } } } = error
+
+            if (message) {
+              return alert(message)
             }
             
             console.log(error);
