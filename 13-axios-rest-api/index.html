@@ -27,17 +27,19 @@
   <h2>Editar Jogo</h2>
 
   <form id="edit" action="/" method="post">
+    <input type="hidden" name="id">
     <input type="text" name="name" placeholder="Nome"><br><br>
     <input type="number" min="1900" max="2099" step="1" name="year" placeholder="Ano"><br><br>
     <input type="number" name="price" placeholder="Preço"><br><br>
-    <button type="submit">Cadastrar</button>
+    <button type="submit" disabled>Editar</button>
   </form>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
     (async () => {
       const gameList = document.querySelector("#games")
-      const createGame = document.querySelector("#create")
+      const createGameForm = document.querySelector("#create")
+      const editGameForm = document.querySelector("#edit")
 
       const games = await axios.get("http://localhost:3000/games")
 
@@ -57,9 +59,32 @@
           })
       }
 
+      function loadEditGameForm(gameId) {
+        axios.get(`http://localhost:3000/game/${gameId}`)
+          .then(result => {
+            const { id, name, price, year } = result.data
+
+            editGameForm.name.value = name
+            editGameForm.year.value = year
+            editGameForm.price.value = price
+            editGameForm.id.value = id
+
+            editGameForm.querySelector("button").disabled = false
+          })
+          .catch(error => {
+            const { response: { data: { message } } } = error
+
+            if (message) {
+              return console.log(message);
+            }
+
+            console.log(error);
+          })
+      }
+
       for (const game of games.data) {
         const item = document.createElement("li")
-        item.innerHTML = game.name
+        item.innerHTML = game.name + " - R$" + game.price / 100
         item.setAttribute("data-id", game.id)
         gameList.appendChild(item)
 
@@ -67,17 +92,22 @@
         deleteBtn.innerHTML = "Deletar"
         deleteBtn.setAttribute("type", "submit")
         item.appendChild(deleteBtn)
-
         deleteBtn.addEventListener("click", () => deleteGame(game.id))
+
+        const editBnn = document.createElement("button")
+        editBnn.innerHTML = "Editar"
+        editBnn.setAttribute("type", "submit")
+        item.appendChild(editBnn)
+        editBnn.addEventListener("click", () => loadEditGameForm(game.id))
       }
 
       function handleCreateGame(event) {
         event.preventDefault()
         
         const newGame = {
-          name: createGame.name.value,
-          year: Number(createGame.year.value),
-          price: Number(createGame.price.value)
+          name: createGameForm.name.value,
+          year: Number(createGameForm.year.value),
+          price: Number(createGameForm.price.value)
         }
 
         axios.post("http://localhost:3000/game", newGame)
@@ -95,7 +125,27 @@
           })
       }
 
-      createGame.addEventListener("submit", handleCreateGame)
+      function handleEditGame(event) {
+        event.preventDefault()
+        
+        const editedGame = {
+          id: editGameForm.id.value,
+          name: editGameForm.name.value,
+          year: editGameForm.year.value,
+          price: editGameForm.price.value,
+        }
+        
+        axios.put(`http://localhost:3000/game/${editedGame.id}`, editedGame)
+          .then(response => {
+            location.reload()
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      }
+
+      createGameForm.addEventListener("submit", handleCreateGame)
+      editGameForm.addEventListener("submit", handleEditGame)
     })()
   </script>
 </body>
