@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h2>Login</h2>
+
+  <form id="login" action="/" method="post">
+    <input type="email" name="email" placeholder="john@doe.com"><br><br>
+    <input type="password" name="password" placeholder="******"><br><br>
+    <button type="submit">Entrar</button>
+  </form>
+
+  <h2>Lista de Jogos</h2>
+
+  <ul id="games"></ul>
+
+  <hr>
+
+  <h2>Novo Jogo</h2>
+
+  <form id="create" action="/" method="post">
+    <input type="text" name="name" placeholder="Nome"><br><br>
+    <input type="number" min="1900" max="2099" step="1" name="year" placeholder="Ano"><br><br>
+    <input type="number" name="price" placeholder="Preço"><br><br>
+    <button type="submit">Cadastrar</button>
+  </form>
+
+  <hr>
+
+  <h2>Editar Jogo</h2>
+
+  <form id="edit" action="/" method="post">
+    <input type="hidden" name="id">
+    <input type="text" name="name" placeholder="Nome"><br><br>
+    <input type="number" min="1900" max="2099" step="1" name="year" placeholder="Ano"><br><br>
+    <input type="number" name="price" placeholder="Preço"><br><br>
+    <button type="submit" disabled>Editar</button>
+  </form>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    (async () => {
+      const gameList = document.querySelector("#games")
+      const createGameForm = document.querySelector("#create")
+      const editGameForm = document.querySelector("#edit")
+      const loginForm = document.querySelector("#login")
+
+      createGameForm.addEventListener("submit", handleCreateGame)
+      editGameForm.addEventListener("submit", handleEditGame)
+      loginForm.addEventListener("submit", handleLogin)
+
+      const axiosConfig = {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token") 
+        }
+      }
+
+      let games = []
+
+      try {
+        const result = await axios.get("http://localhost:3000/games", axiosConfig)
+        games = result.data.games
+      } catch (error) {
+        const { response: { data: { message } } } = error
+
+        if (message) {
+          return console.log(message);
+        }
+        
+        console.log(error);
+      }
+
+      function deleteGame(gameId) {
+        axios.delete(`http://localhost:3000/game/${gameId}`, axiosConfig)
+          .then(response => {
+            location.reload()
+          })
+          .catch(error => {         
+            const { response: { data: { message } } } = error
+            
+            if (message) {
+              return console.log(message);
+            }
+            
+            console.log(error);
+          })
+      }
+
+      function loadEditGameForm(gameId) {
+        axios.get(`http://localhost:3000/game/${gameId}`, axiosConfig)
+          .then(result => {
+            const { id, name, price, year } = result.data
+
+            editGameForm.name.value = name
+            editGameForm.year.value = year
+            editGameForm.price.value = price
+            editGameForm.id.value = id
+
+            editGameForm.querySelector("button").disabled = false
+          })
+          .catch(error => {
+            const { response: { data: { message } } } = error
+
+            if (message) {
+              return console.log(message);
+            }
+
+            console.log(error);
+          })
+      }
+
+      for (const game of games) {
+        const item = document.createElement("li")
+        item.innerHTML = game.name + " - R$" + game.price / 100
+        item.setAttribute("data-id", game.id)
+        gameList.appendChild(item)
+
+        const deleteBtn = document.createElement("button")
+        deleteBtn.innerHTML = "Deletar"
+        deleteBtn.setAttribute("type", "submit")
+        item.appendChild(deleteBtn)
+        deleteBtn.addEventListener("click", () => deleteGame(game.id))
+
+        const editBnn = document.createElement("button")
+        editBnn.innerHTML = "Editar"
+        editBnn.setAttribute("type", "submit")
+        item.appendChild(editBnn)
+        editBnn.addEventListener("click", () => loadEditGameForm(game.id))
+      }
+
+      function handleCreateGame(event) {
+        event.preventDefault()
+        
+        const newGame = {
+          name: createGameForm.name.value,
+          year: Number(createGameForm.year.value),
+          price: Number(createGameForm.price.value)
+        }
+
+        axios.post("http://localhost:3000/game", newGame, axiosConfig)
+          .then(() => {
+            location.reload()
+          })
+          .catch((error) => {
+            const { response: { data: { message } } } = error
+
+            if (message) {
+              return alert(message)
+            }
+            
+            console.log(error);
+          })
+      }
+
+      function handleEditGame(event) {
+        event.preventDefault()
+        
+        const editedGame = {
+          id: editGameForm.id.value,
+          name: editGameForm.name.value,
+          year: editGameForm.year.value,
+          price: editGameForm.price.value,
+        }
+        
+        axios.put(`http://localhost:3000/game/${editedGame.id}`, editedGame, axiosConfig)
+          .then(response => {
+            location.reload()
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      }
+    
+      function handleLogin(event) {
+        event.preventDefault()
+
+        const email = loginForm.email.value
+        const password = loginForm.password.value
+
+        axios.post("http://localhost:3000/auth", { email, password })
+          .then(result => {
+            const { token } = result.data
+            localStorage.setItem("token", token)
+            location.reload()
+          })
+          .catch(error => {
+            const { response: { data: { message }} } = error
+
+            if (message) {
+              return alert(message)
+            }
+
+            console.log(error)
+          })
+      }
+    })()
+  </script>
+</body>
+</html>

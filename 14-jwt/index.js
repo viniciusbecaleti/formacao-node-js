@@ -125,10 +125,10 @@ app.post("/auth", (req, res) => {
 })
 
 app.get("/games", auth, (req, res) => {
-  res.status(200).json({ user: req.logged, games: db.games })
+  res.status(200).json({ games: db.games })
 })
 
-app.get("/game/:id", (req, res) => {
+app.get("/game/:id", auth, (req, res) => {
   const { id } = req.params
   const game = db.games.find(game => game.id === Number(id))
   
@@ -147,7 +147,7 @@ app.get("/game/:id", (req, res) => {
   res.status(200).json(game)
 })
 
-app.post("/game", (req, res) => {
+app.post("/game", auth, (req, res) => {
   const { name, year, price } = req.body
 
   if (!name || !year || !price) {
@@ -174,7 +174,7 @@ app.post("/game", (req, res) => {
   res.sendStatus(201)
 })
 
-app.delete("/game/:id", (req, res) => {
+app.delete("/game/:id", auth, (req, res) => {
   const { id } = req.params
 
   if (isNaN(id)) {
@@ -198,7 +198,7 @@ app.delete("/game/:id", (req, res) => {
   res.sendStatus(200)
 })
 
-app.put("/game/:id", (req, res) => {
+app.put("/game/:id", auth, (req, res) => {
   const { id } = req.params
   const { name, year, price } = req.body
 
@@ -246,4 +246,4 @@ app.put("/game/:id", (req, res) => {
   res.sendStatus(200)
 })
 
-app.listen(5500, () => console.log("Server is running on port 5500"))
+app.listen(3000, () => console.log("Server is running"))
