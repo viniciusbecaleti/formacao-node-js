@@ -1,4 +1,5 @@
 const User = require("../models/User")
+const PasswordToken = require("../models/PasswordToken")
 const validateEmail = require("../utils/validateEmail")
 
 class UserController {
@@ -72,7 +73,7 @@ class UserController {
 
     const user = await User.findByEmail(email)
 
-    if (user.length !== 0) {
+    if (user) {
       return res.status(406).json({
         error: "E-mail already exists",
       })
@@ -138,6 +139,69 @@ class UserController {
         error: "Internal server error",
       })
     }
+  }
+
+  async delete(req, res) {
+    const { id } = req.params
+
+    try {
+      const response = await User.delete(id)
+
+      if (!response.status) {
+        return res.status(406).json({
+          error: response.error,
+        })
+      }
+
+      res.sendStatus(200)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        error: "Internal server error",
+      })
+    }
+  }
+
+  async recoverPassword(req, res) {
+    const { email } = req.body
+
+    if (email === undefined) {
+      return res.status(403).json({
+        error: "'email' is a required parameter",
+      })
+    }
+
+    if (email.length === 0) {
+      return res.status(403).json({
+        error: "'email' parameter can't be empty",
+      })
+    }
+
+    const validEmail = validateEmail(email)
+
+    if (!validEmail) {
+      return res.status(403).json({
+        error: "Invalid email address",
+      })
+    }
+
+    const user = await User.findByEmail(email)
+
+    if (!user) {
+      return res.status(403).json({
+        error: "User not found",
+      })
+    }
+
+    const response = await PasswordToken.create(user.id)
+
+    if (!response.status) {
+      return res.status(406).json({
+        error: response.error,
+      })
+    }
+
+    res.json(response.token)
   }
 }
 

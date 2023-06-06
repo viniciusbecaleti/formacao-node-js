@@ -126,6 +126,27 @@ class User {
       console.log(error)
     }
   }
+
+  async delete(id) {
+    try {
+      const user = await this.findById(id)
+
+      if (!user) {
+        return {
+          status: false,
+          error: "User not found"
+        }
+      }
+
+      await knex.delete().table("users").where({ id })
+
+      return {
+        status: true
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 }
 
 module.exports = new User()

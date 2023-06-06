@@ -5,8 +5,10 @@ const UserController = require("../controllers/UserController")
 
 router.get("/", HomeController.index)
 router.get("/users", UserController.index)
-router.get("/users/:id", UserController.show)
-router.post("/users", UserController.create)
-router.put("/users/:id", UserController.update)
+router.get("/user/:id", UserController.show)
+router.post("/user", UserController.create)
+router.put("/user/:id", UserController.update)
+router.delete("/user/:id", UserController.delete)
+router.post("/user/recover-password", UserController.recoverPassword)
 
 module.exports = router
