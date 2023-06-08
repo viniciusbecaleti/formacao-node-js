@@ -203,6 +203,47 @@ class UserController {
 
     res.json(response.token)
   }
+
+  async changePassword(req, res) {
+    try {
+      const { token, password } = req.body
+
+      if (token === undefined) {
+        return res.status(403).json({
+          error: "'token' is a required parameter",
+        })
+      }
+
+      const isValidToken = await PasswordToken.validate(token)
+
+      if (!isValidToken.status) {
+        return res.status(406).json({
+          error: isValidToken.error,
+        })
+      }
+
+      if (password === undefined) {
+        return res.status(403).json({
+          error: "'password' is a required parameter",
+        })
+      }
+
+      if (password.length < 6) {
+        return res.status(403).json({
+          error: "'password' parameter can't be less than 6 characters",
+        })
+      }
+
+      await User.changePassword(password, isValidToken.token.user_id, isValidToken.token.token)
+
+      res.sendStatus(200)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        error: "Internal server error",
+      })
+    }
+  }
 }
 
 module.exports = new UserController()
